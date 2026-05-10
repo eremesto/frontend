@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\pages",
+    "\\src\\pages\\Registration",
+    "\\src\\pages\\Registration\\RegistrationAutoService",
+    "\\src\\pages\\Registration\\RegistrationUser",
+    "\\src\\pages\\Services",
+    "\\src\\redux",
+    "\\src\\redux\\Slices",
+    "\\src\\redux\\Slices\\UserSlice"
+  ],
+  "PreviewInSolutionExplorer": false
+}
