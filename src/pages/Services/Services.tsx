@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   View, Text, TouchableOpacity, ActivityIndicator, Image, Pressable, ScrollView,
 } from "react-native";
@@ -6,6 +6,49 @@ import styles from "./ServicesStyle";
 import TextInputComponent from "@components/TextInputComponent";
 import { useGetServicesQuery } from "api/Users/getServices";
 import Toast from "react-native-toast-message";
+
+type ServiceFilterKey =
+  | "all"
+  | "maintenance"
+  | "diagnostics"
+  | "wheels"
+  | "body"
+  | "engine"
+  | "electric"
+  | "other";
+
+type ServiceFilterOption = {
+  key: ServiceFilterKey;
+  label: string;
+};
+
+type ServiceItem = {
+  _id: string;
+  name: string;
+  urlServices: string;
+};
+
+type CategorizedFilterKey = Exclude<ServiceFilterKey, "all" | "other">;
+
+const SERVICE_FILTERS: ServiceFilterOption[] = [
+  { key: "all", label: "Все" },
+  { key: "maintenance", label: "ТО" },
+  { key: "diagnostics", label: "Диагностика" },
+  { key: "wheels", label: "Колёса" },
+  { key: "body", label: "Кузов" },
+  { key: "engine", label: "Двигатель" },
+  { key: "electric", label: "Электрика" },
+  { key: "other", label: "Прочее" },
+];
+
+const SERVICE_FILTER_KEYWORDS: Record<CategorizedFilterKey, string[]> = {
+  maintenance: ["масл", "обслуж", "тех"],
+  diagnostics: ["диагност"],
+  wheels: ["шин", "колес", "колёс", "диск"],
+  body: ["кузов", "стекл"],
+  engine: ["двигател", "топлив", "охлажд", "короб", "передач", "подвес", "тормоз"],
+  electric: ["электр", "фар", "оптик"],
+};
 
 const serviceImages: Record<string, any> = {
   "oil-change.png": require("assets/services/oil-change.png"),
@@ -28,21 +71,39 @@ const getImageSource = (urlServices: string) => {
   return { uri: urlServices };
 };
 
+const getServiceFilterKey = (serviceName: string): ServiceFilterKey => {
+  const normalizedName = serviceName.toLowerCase();
+  const matchedFilter = Object.entries(SERVICE_FILTER_KEYWORDS).find(([, keywords]) =>
+    keywords.some((keyword) => normalizedName.includes(keyword))
+  );
+
+  return matchedFilter ? (matchedFilter[0] as CategorizedFilterKey) : "other";
+};
+
 const Services = ({ navigation }: any) => {
   const [searchText, setSearchText] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState<ServiceFilterKey>("all");
   const { data: services, error, isLoading } = useGetServicesQuery();
   const [selectedServices, setSelectedServices] = useState<{ id: string; name: string }[]>([]);
 
-  if (error) {
-    Toast.show({ type: "error", text1: "Ошибка", text2: "Не удалось загрузить услуги.", visibilityTime: 3000 });
-    return null;
-  }
+  useEffect(() => {
+    if (error) {
+      Toast.show({ type: "error", text1: "Ошибка", text2: "Не удалось загрузить услуги.", visibilityTime: 3000 });
+    }
+  }, [error]);
 
-  const filteredServices = services?.filter((service: any) =>
-    service.name.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const filteredServices = useMemo(() => {
+    const normalizedSearch = searchText.trim().toLowerCase();
 
-  const handleServicePress = (service: any) => {
+    return ((services as ServiceItem[] | undefined) || [])
+      .filter((service) => {
+        if (selectedFilter === "all") return true;
+        return getServiceFilterKey(service.name) === selectedFilter;
+      })
+      .filter((service) => service.name.toLowerCase().includes(normalizedSearch));
+  }, [searchText, selectedFilter, services]);
+
+  const handleServicePress = (service: ServiceItem) => {
     const isSelected = selectedServices.some((s) => s.id === service._id);
     if (isSelected) setSelectedServices(selectedServices.filter((s) => s.id !== service._id));
     else setSelectedServices([...selectedServices, { id: service._id, name: service.name }]);
@@ -59,12 +120,40 @@ const Services = ({ navigation }: any) => {
         <TextInputComponent value={searchText} setValue={setSearchText} placeholder="Поиск" isSearch={true} />
       </View>
       <Text style={styles.header}>Выберите вид услуг</Text>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.filtersScroll}
+        contentContainerStyle={styles.filtersContainer}
+      >
+        {SERVICE_FILTERS.map((filter) => {
+          const isActive = selectedFilter === filter.key;
+
+          return (
+            <TouchableOpacity
+              key={filter.key}
+              style={[styles.filterChip, isActive && styles.filterChipActive]}
+              onPress={() => setSelectedFilter(filter.key)}
+              activeOpacity={0.85}
+            >
+              <Text style={[styles.filterChipText, isActive && styles.filterChipTextActive]}>
+                {filter.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
       {isLoading ? (
         <ActivityIndicator size="large" color="#FFC107" />
+      ) : error ? null : filteredServices.length === 0 ? (
+        <View style={styles.emptyState}>
+          <Text style={styles.emptyTitle}>Ничего не найдено</Text>
+          <Text style={styles.emptyText}>Попробуйте изменить фильтр или поисковый запрос</Text>
+        </View>
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.servicesGrid}>
-            {filteredServices?.map((item: any) => {
+            {filteredServices.map((item) => {
               const isSelected = selectedServices.some((s) => s.id === item._id);
               const imageSource = getImageSource(item.urlServices);
 

@@ -17,6 +17,19 @@ const SERVICES_LIST = [
   "Фары и оптика","Подвеска","Замена стекла","Коробка передач","Система охлаждения",
 ];
 
+type ServicePrices = Record<string, string>;
+
+const hasServicePrices = (prices?: ServicePrices) =>
+  !!prices && Object.values(prices).some((price) => String(price).trim().length > 0);
+
+const formatServicePrice = (price?: string) => {
+  const trimmedPrice = price?.trim();
+  if (!trimmedPrice) return "";
+  if (/[₽]|руб/i.test(trimmedPrice)) return trimmedPrice;
+  if (/\d/.test(trimmedPrice)) return `${trimmedPrice} ₽`;
+  return trimmedPrice;
+};
+
 // ======================== CalendarPicker =========================
 const MONTH_NAMES = ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
 const DAY_NAMES = ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
@@ -303,20 +316,29 @@ const ServiceProfile = ({ service, navigation, dispatch }: any) => {
   const [startOfWork, setStartOfWork] = useState(service?.startOfWork || "");
   const [endOfWork, setEndOfWork] = useState(service?.endOfWork || "");
   const [selectedServices, setSelectedServices] = useState<string[]>(service?.services || []);
+  const [servicePrices, setServicePrices] = useState<ServicePrices>(service?.servicePrices || {});
 
   const toggleService = (sv: string) =>
     setSelectedServices((prev) => prev.includes(sv) ? prev.filter(x => x !== sv) : [...prev, sv]);
+
+  const updateServicePrice = (serviceName: string, price: string) => {
+    setServicePrices((prev) => ({ ...prev, [serviceName]: price }));
+  };
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
       const res = await fetch(`${baseUrl}/service/updateProfile`, {
         method: "PUT", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: service._id, city, telephoneNumber, webAddress, address, startOfWork, endOfWork, services: selectedServices }),
+        body: JSON.stringify({ id: service._id, city, telephoneNumber, webAddress, address, startOfWork, endOfWork, services: selectedServices, servicePrices }),
       });
       const data = await res.json();
       if (res.ok) {
-        dispatch(setServiceData(data.service));
+        const nextServicePrices = hasServicePrices(data.service?.servicePrices)
+          ? data.service.servicePrices
+          : servicePrices;
+        setServicePrices(nextServicePrices);
+        dispatch(setServiceData({ ...data.service, servicePrices: nextServicePrices }));
         setIsEditing(false);
         Alert.alert("Готово", "Профиль обновлён");
       } else Alert.alert("Ошибка", data.message);
@@ -332,6 +354,7 @@ const ServiceProfile = ({ service, navigation, dispatch }: any) => {
     setStartOfWork(service?.startOfWork || "");
     setEndOfWork(service?.endOfWork || "");
     setSelectedServices(service?.services || []);
+    setServicePrices(service?.servicePrices || {});
     setIsEditing(false);
   };
 
@@ -410,9 +433,29 @@ const ServiceProfile = ({ service, navigation, dispatch }: any) => {
               </TouchableOpacity>
             ))
             : selectedServices.length > 0
-              ? selectedServices.map((sv, i) => <View key={i} style={st.tag}><Text style={st.tagText}>{sv}</Text></View>)
+              ? selectedServices.map((sv, i) => {
+                const price = formatServicePrice(servicePrices[sv]);
+                return <View key={i} style={st.tag}><Text style={st.tagText}>{sv}{price ? ` · ${price}` : ""}</Text></View>;
+              })
               : <Text style={st.infoValue}>Не указаны</Text>}
         </View>
+        {isEditing && selectedServices.length > 0 && (
+          <View style={st.pricesBlock}>
+            <Text style={st.infoLabel}>Цены</Text>
+            {selectedServices.map((sv) => (
+              <View key={sv} style={st.priceRow}>
+                <Text style={st.priceServiceName} numberOfLines={2}>{sv}</Text>
+                <TextInput
+                  style={[st.input, st.priceInput]}
+                  value={servicePrices[sv] || ""}
+                  onChangeText={(price) => updateServicePrice(sv, price)}
+                  placeholder="от 2500 ₽"
+                  placeholderTextColor="#555"
+                />
+              </View>
+            ))}
+          </View>
+        )}
       </View>
 
       <View style={st.statsRow}>
@@ -526,7 +569,7 @@ const formatDateToYMD = (dateStr: string) => {
       });
       const data2 = await res2.json();
       if (res2.ok) dispatch(setUserData({ ...user, myApplications: data2.myApplications }));
-      Alert.alert("Готово! 🎉", `Заявка в ${selectedForApp.nameService} на ${appDate} в ${appTime} отправлена!`);
+      Alert.alert("Готово!", `Заявка в ${selectedForApp.nameService} на ${appDate} в ${appTime} отправлена!`);
       setShowApplication(false);
     } catch { Alert.alert("Ошибка", "Проблема с подключением"); }
     finally { setIsSending(false); }
@@ -899,7 +942,10 @@ const formatDateToYMD = (dateStr: string) => {
                 </View>
               ) : null}
               {detailService?.services?.length > 0 ? (
-                <View style={{ marginTop: 16 }}><Text style={[st.cardTitle, { marginBottom: 10 }]}>Услуги</Text><View style={st.tagsContainer}>{detailService.services.map((sv: string, i: number) => <View key={i} style={st.tag}><Text style={st.tagText}>{sv}</Text></View>)}</View></View>
+                <View style={{ marginTop: 16 }}><Text style={[st.cardTitle, { marginBottom: 10 }]}>Услуги</Text><View style={st.tagsContainer}>{detailService.services.map((sv: string, i: number) => {
+                  const price = formatServicePrice(detailService.servicePrices?.[sv]);
+                  return <View key={i} style={st.tag}><Text style={st.tagText}>{sv}{price ? ` · ${price}` : ""}</Text></View>;
+                })}</View></View>
               ) : null}
               <TouchableOpacity style={[st.saveButton, { marginTop: 20, padding: 16 }]} onPress={() => openApplication(detailService)}>
                 <Icon name="calendar" size={16} color="#1d1d1d" />
@@ -925,9 +971,10 @@ const formatDateToYMD = (dateStr: string) => {
                 <View style={[st.tagsContainer, { marginBottom: 16 }]}>
                   {selectedForApp.services.map((sv: string, i: number) => {
                     const active = chosenServices.includes(sv);
+                    const price = formatServicePrice(selectedForApp.servicePrices?.[sv]);
                     return (
                       <TouchableOpacity key={i} onPress={() => toggleChosenService(sv)} style={[st.tag, active && st.tagActive]}>
-                        <Text style={[st.tagText, active && st.tagTextActive]}>{active ? <Icon name="check" size={12} color="#1d1d1d" /> : null} {sv}</Text>
+                        <Text style={[st.tagText, active && st.tagTextActive]}>{active ? <Icon name="check" size={12} color="#1d1d1d" /> : null} {sv}{price ? ` · ${price}` : ""}</Text>
                       </TouchableOpacity>
                     );
                   })}
@@ -1012,6 +1059,10 @@ const st = StyleSheet.create({
   tagActive: { backgroundColor: "#FFC107", borderColor: "#FFC107" },
   tagText: { color: "#ddd", fontSize: 13 },
   tagTextActive: { color: "#1d1d1d", fontWeight: "bold" },
+  pricesBlock: { marginTop: 16, paddingTop: 16, borderTopWidth: 1, borderTopColor: "#3a3a3a" },
+  priceRow: { flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 10 },
+  priceServiceName: { flex: 1, color: "#ddd", fontSize: 13, fontWeight: "600", lineHeight: 18 },
+  priceInput: { flex: 1, marginBottom: 0, textAlign: "right" },
   statsRow: { flexDirection: "row", marginHorizontal: 20, marginBottom: 16, gap: 12 },
   statCard: { flex: 1, backgroundColor: "#2a2a2a", borderRadius: 16, padding: 16, alignItems: "center" },
   statNumber: { fontSize: 28, fontWeight: "bold", color: "#FFC107" },

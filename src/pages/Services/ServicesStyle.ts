@@ -20,7 +20,35 @@ export default StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#fff",
-    marginBottom: 20,
+    marginBottom: 12,
+  },
+  filtersScroll: {
+    marginBottom: 18,
+    flexGrow: 0,
+  },
+  filtersContainer: {
+    gap: 8,
+    paddingRight: 8,
+  },
+  filterChip: {
+    backgroundColor: "#2a2a2a",
+    borderWidth: 1,
+    borderColor: "#444",
+    borderRadius: 18,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+  },
+  filterChipActive: {
+    backgroundColor: "#FFC107",
+    borderColor: "#FFC107",
+  },
+  filterChipText: {
+    color: "#d4d4d4",
+    fontSize: 13,
+    fontWeight: "600",
+  },
+  filterChipTextActive: {
+    color: "#1d1d1d",
   },
   servicesGrid: {
     flexDirection: "row",
@@ -107,6 +135,26 @@ export default StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: "#3B3B3B",
+  },
+  emptyState: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 24,
+    paddingTop: 80,
+  },
+  emptyTitle: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 8,
+    textAlign: "center",
+  },
+  emptyText: {
+    color: "#888",
+    fontSize: 14,
+    lineHeight: 20,
+    textAlign: "center",
   },
   servicesBackground: {
     flex: 1,

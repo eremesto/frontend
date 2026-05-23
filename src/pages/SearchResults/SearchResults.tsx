@@ -10,6 +10,19 @@ import Icon from "components/Icon";
 
 const { height } = Dimensions.get("window");
 
+type ServicePrices = Record<string, string>;
+
+const formatServicePrice = (price?: string) => {
+  const trimmedPrice = price?.trim();
+  if (!trimmedPrice) return "";
+  if (/[₽]|руб/i.test(trimmedPrice)) return trimmedPrice;
+  if (/\d/.test(trimmedPrice)) return `${trimmedPrice} ₽`;
+  return trimmedPrice;
+};
+
+const getServicePriceLabel = (service: any, serviceName: string) =>
+  formatServicePrice((service?.servicePrices as ServicePrices | undefined)?.[serviceName]);
+
 // ─── CalendarPicker (без эмодзи) ────────────────────────────────────────────
 const MONTH_NAMES = ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
 const DAY_NAMES = ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
@@ -356,7 +369,7 @@ const SearchResults = ({ route, navigation }: any) => {
       });
       const data2 = await res2.json();
       if (res2.ok) dispatch(setUserData({ ...user, myApplications: data2.myApplications }));
-      Alert.alert("Готово! 🎉", `Заявка в ${selectedService.nameService} на ${appDate} в ${appTime} отправлена!`);
+      Alert.alert("Готово!", `Заявка в ${selectedService.nameService} на ${appDate} в ${appTime} отправлена!`);
       setShowApplication(false); setAppDate("");
     } catch { Alert.alert("Ошибка", "Проблема с подключением"); }
     finally { setIsSending(false); }
@@ -382,11 +395,16 @@ const SearchResults = ({ route, navigation }: any) => {
         {service.startOfWork && service.endOfWork ? <View style={s.infoRow}><Icon name="calendar" size={14} color="#888" /><Text style={s.infoText}>{service.startOfWork} — {service.endOfWork}</Text></View> : null}
         {service.services?.length > 0 && (
           <View style={s.tagsContainer}>
-            {service.services.map((sv: string, i: number) => (
-              <View key={i} style={[s.tag, serviceNames.includes(sv) && s.tagHL]}>
-                <Text style={[s.tagText, serviceNames.includes(sv) && s.tagTextHL]}>{sv}</Text>
-              </View>
-            ))}
+            {service.services.map((sv: string, i: number) => {
+              const price = getServicePriceLabel(service, sv);
+              return (
+                <View key={i} style={[s.tag, serviceNames.includes(sv) && s.tagHL]}>
+                  <Text style={[s.tagText, serviceNames.includes(sv) && s.tagTextHL]}>
+                    {sv}{price ? ` · ${price}` : ""}
+                  </Text>
+                </View>
+              );
+            })}
           </View>
         )}
         <TouchableOpacity style={s.applyBtn} onPress={() => { setSelectedService(service); setShowApplication(true); }}>
@@ -459,11 +477,16 @@ const SearchResults = ({ route, navigation }: any) => {
                 <View style={{ marginTop: 16 }}>
                   <Text style={s.sectionTitle}>Услуги</Text>
                   <View style={s.tagsContainer}>
-                    {selectedService.services.map((sv: string, i: number) => (
-                      <View key={i} style={[s.tag, serviceNames.includes(sv) && s.tagHL]}>
-                        <Text style={[s.tagText, serviceNames.includes(sv) && s.tagTextHL]}>{sv}</Text>
-                      </View>
-                    ))}
+                    {selectedService.services.map((sv: string, i: number) => {
+                      const price = getServicePriceLabel(selectedService, sv);
+                      return (
+                        <View key={i} style={[s.tag, serviceNames.includes(sv) && s.tagHL]}>
+                          <Text style={[s.tagText, serviceNames.includes(sv) && s.tagTextHL]}>
+                            {sv}{price ? ` · ${price}` : ""}
+                          </Text>
+                        </View>
+                      );
+                    })}
                   </View>
                 </View>
               )}
@@ -501,9 +524,16 @@ const SearchResults = ({ route, navigation }: any) => {
               <View style={s.divider} />
               <Text style={s.sectionTitle}>Выбранные услуги</Text>
               <View style={[s.tagsContainer, { marginBottom: 16 }]}>
-                {serviceNames.map((sv: string, i: number) => (
-                  <View key={i} style={s.tagHL}><Text style={s.tagTextHL}>{sv}</Text></View>
-                ))}
+                {serviceNames.map((sv: string, i: number) => {
+                  const price = getServicePriceLabel(selectedService, sv);
+                  return (
+                    <View key={i} style={s.tagHL}>
+                      <Text style={s.tagTextHL}>
+                        {sv}{price ? ` · ${price}` : ""}
+                      </Text>
+                    </View>
+                  );
+                })}
               </View>
               <Text style={s.sectionTitle}>Дата</Text>
               <CalendarPicker value={appDate} onChange={(d: string) => { setAppDate(d); setAppTime("09:00"); }} />
