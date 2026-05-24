@@ -158,18 +158,18 @@ const RegistrationAutoService = ({ navigation }: NavigationType) => {
     <View style={styles.container}>
       {step === "email" && (
         <>
-          <TextInputComponent value={email} setValue={setEmail} placeholder="Email" isSearch={false} />
+          <TextInputComponent value={email} setValue={setEmail} placeholder="Email" isSearch={false} removeWhitespace keyboardType="email-address" />
           <View style={{ marginVertical: 10 }} />
-          <TextInputComponent value={password} setValue={setPassword} placeholder="Пароль" secureTextEntry isSearch={false} />
+          <TextInputComponent value={password} setValue={setPassword} placeholder="Пароль" secureTextEntry isSearch={false} removeWhitespace />
           <View style={{ marginVertical: 10 }} />
-          <TextInputComponent value={confirmPassword} setValue={setConfirmPassword} placeholder="Повторите пароль" secureTextEntry isSearch={false} />
+          <TextInputComponent value={confirmPassword} setValue={setConfirmPassword} placeholder="Повторите пароль" secureTextEntry isSearch={false} removeWhitespace />
           <View style={{ marginVertical: 15 }} />
           <ButtonComponent onPress={sendCode} isLoading={isLoading} title="Отправить код" />
         </>
       )}
       {step === "code" && (
         <>
-          <TextInputComponent value={code} setValue={setCode} placeholder="Код из письма" isSearch={false} />
+          <TextInputComponent value={code} setValue={setCode} placeholder="Код из письма" isSearch={false} removeWhitespace keyboardType="number-pad" />
           <View style={{ marginVertical: 15 }} />
           <ButtonComponent onPress={verifyCode} isLoading={isLoading} title="Подтвердить код" />
           <TouchableOpacity onPress={() => setStep("email")} style={{ marginTop: 20 }}>

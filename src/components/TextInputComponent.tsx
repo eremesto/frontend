@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { TextInput, View, Image, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
+import type { KeyboardTypeOptions } from "react-native";
 import Icon from "./Icon";
 import loup from "assets/loup.png";
 
@@ -11,6 +12,8 @@ interface TextInputComponentProps {
   placeholder: string;
   secureTextEntry?: boolean;
   isSearch: boolean;
+  removeWhitespace?: boolean;
+  keyboardType?: KeyboardTypeOptions;
 }
 
 const TextInputComponent: React.FC<TextInputComponentProps> = ({
@@ -19,18 +22,24 @@ const TextInputComponent: React.FC<TextInputComponentProps> = ({
   placeholder,
   secureTextEntry = false,
   isSearch,
+  removeWhitespace = false,
+  keyboardType = "default",
 }) => {
   const [isHidden, setIsHidden] = useState(true);
+  const handleChangeText = (text: string) => {
+    setValue(removeWhitespace ? text.replace(/\s+/g, "") : text);
+  };
 
   return (
     <View style={styles.inputContainer}>
       <TextInput
         value={value}
-        onChangeText={setValue}
+        onChangeText={handleChangeText}
         placeholder={placeholder}
         placeholderTextColor="#FFC107"
         secureTextEntry={secureTextEntry ? isHidden : false}
         style={styles.input}
+        keyboardType={keyboardType}
         autoCapitalize="none"
         autoComplete="off"                    // отключает автозаполнение
         textContentType="none"               // для iOS – убирает подсказки

@@ -336,71 +336,113 @@ const ServiceRequestsScreen = ({ navigation, onUnreadChange }: any) => {
   const done = declarations.filter((d: any) => d.status === "done");
 
   const DeclCard = ({ decl }: any) => {
-    const isDone = decl.status === "done";
-    const isNew = newDeclIds.has(decl._id);
-    const unread = unreadMap[decl._id] || 0;
+  const isDone = decl.status === "done";
+  const isNew = newDeclIds.has(decl._id);
+  const unread = unreadMap[decl._id] || 0;
 
-    return (
-      <View style={[rq.card, isDone && { opacity: 0.6 }, isNew && rq.cardNew]}>
-        {isNew && (
-          <View style={rq.newBanner}>
-            <Icon name="warning" size={12} color="#FFC107" />
-            <Text style={rq.newBannerText}> Новая заявка</Text>
-          </View>
-        )}
-        <View style={rq.cardHeader}>
-          <View style={[rq.avatar, { backgroundColor: "#3a7bd5" }]}>
-            <Text style={rq.avatarText}>{decl.login?.charAt(0).toUpperCase()}</Text>
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={rq.clientName}>{decl.carInfo?.displayName || decl.login}</Text>
-            <Text style={rq.dateText}>
-              <Icon name="calendar" size={12} color="#888" /> {formatDate(decl.date)} в {decl.time}
-            </Text>
-          </View>
-          <View style={[rq.statusBadge, isDone ? rq.statusBadgeDone : rq.statusBadgeNew]}>
-            {isDone ? <Icon name="check" size={12} color="#666" /> : <Icon name="circle-dot" size={12} color="#4caf50" />}
-            <Text style={[rq.statusText, isDone ? rq.statusTextDone : rq.statusTextNew]}>
-              {isDone ? " Выполнена" : " Активна"}
-            </Text>
-          </View>
+  const hasCarInfo = decl.carInfo && (
+    decl.carInfo.carBrand || decl.carInfo.carModel || decl.carInfo.carYear ||
+    decl.carInfo.carNumber || decl.carInfo.vinNumber || decl.carInfo.phone
+  );
+
+  return (
+    <View style={[rq.card, isDone && { opacity: 0.6 }, isNew && rq.cardNew]}>
+      {isNew && (
+        <View style={rq.newBanner}>
+          <Icon name="warning" size={12} color="#FFC107" />
+          <Text style={rq.newBannerText}> Новая заявка</Text>
         </View>
-        {decl.listAssistances?.length > 0 && (
-          <View style={rq.tagsRow}>
-            {decl.listAssistances.map((sv: string, j: number) => (
-              <View key={j} style={rq.tag}><Text style={rq.tagText}>{sv}</Text></View>
-            ))}
-          </View>
-        )}
-        <View style={rq.cardActions}>
-          <TouchableOpacity
-            style={[rq.chatBtn, unread > 0 && rq.chatBtnUnread]}
-            onPress={() => {
-              setUnreadMap(prev => { const n = {...prev}; delete n[decl._id]; return n; });
-              setNewDeclIds(prev => { const n = new Set(prev); n.delete(decl._id); return n; });
-              navigation.navigate("Chat", { applicationId: decl._id, serviceName: service.nameService, interlocutorLogin: decl.login });
-            }}
-          >
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-              <Icon name="chat" size={16} color={unread > 0 ? "#fff" : "#3a7bd5"} />
-              <Text style={[rq.chatBtnText, unread > 0 && { color: "#fff" }]}>Ответить клиенту</Text>
-              {unread > 0 && <Badge count={unread} />}
-            </View>
-          </TouchableOpacity>
-          {!isDone && (
-            <TouchableOpacity style={rq.doneBtn} onPress={() => markDone(decl._id, decl.login)} disabled={updatingId === decl._id}>
-              {updatingId === decl._id ? <ActivityIndicator color="#1d1d1d" size="small" /> : (
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
-                  <Icon name="check" size={14} color="#1d1d1d" />
-                  <Text style={rq.doneBtnText}>Выполнено</Text>
-                </View>
-              )}
-            </TouchableOpacity>
-          )}
+      )}
+      <View style={rq.cardHeader}>
+        <View style={[rq.avatar, { backgroundColor: "#3a7bd5" }]}>
+          <Text style={rq.avatarText}>{decl.login?.charAt(0).toUpperCase()}</Text>
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text style={rq.clientName}>{decl.carInfo?.displayName || decl.login}</Text>
+          <Text style={rq.dateText}>
+            <Icon name="calendar" size={12} color="#888" /> {formatDate(decl.date)} в {decl.time}
+          </Text>
+        </View>
+        <View style={[rq.statusBadge, isDone ? rq.statusBadgeDone : rq.statusBadgeNew]}>
+          {isDone ? <Icon name="check" size={12} color="#666" /> : <Icon name="circle-dot" size={12} color="#4caf50" />}
+          <Text style={[rq.statusText, isDone ? rq.statusTextDone : rq.statusTextNew]}>
+            {isDone ? " Выполнена" : " Активна"}
+          </Text>
         </View>
       </View>
-    );
-  };
+
+      {decl.listAssistances?.length > 0 && (
+        <View style={rq.tagsRow}>
+          {decl.listAssistances.map((sv: string, j: number) => (
+            <View key={j} style={rq.tag}><Text style={rq.tagText}>{sv}</Text></View>
+          ))}
+        </View>
+      )}
+
+      {hasCarInfo && (
+        <View style={rq.carInfoBox}>
+          <View style={rq.carInfoTitleRow}>
+            <Icon name="car" size={14} color="#FFC107" />
+            <Text style={rq.carInfoTitle}> Автомобиль клиента</Text>
+          </View>
+          {decl.carInfo.phone && (
+            <View style={rq.carInfoRow}>
+              <Icon name="phone" size={12} color="#888" />
+              <Text style={rq.carInfoText}> {decl.carInfo.phone}</Text>
+            </View>
+          )}
+          {(decl.carInfo.carBrand || decl.carInfo.carModel) && (
+            <View style={rq.carInfoRow}>
+              <Icon name="car" size={12} color="#888" />
+              <Text style={rq.carInfoText}>
+                {decl.carInfo.carBrand} {decl.carInfo.carModel} {decl.carInfo.carYear ? `(${decl.carInfo.carYear})` : ''}
+              </Text>
+            </View>
+          )}
+          {decl.carInfo.carNumber && (
+            <View style={rq.carInfoRow}>
+              <Icon name="pin" size={12} color="#888" />
+              <Text style={rq.carInfoText}> {decl.carInfo.carNumber}</Text>
+            </View>
+          )}
+          {decl.carInfo.vinNumber && (
+            <View style={rq.carInfoRow}>
+              <Icon name="clipboard" size={12} color="#888" />
+              <Text style={rq.carInfoText}> {decl.carInfo.vinNumber}</Text>
+            </View>
+          )}
+        </View>
+      )}
+
+      <View style={rq.cardActions}>
+        <TouchableOpacity
+          style={[rq.chatBtn, unread > 0 && rq.chatBtnUnread]}
+          onPress={() => {
+            setUnreadMap(prev => { const n = {...prev}; delete n[decl._id]; return n; });
+            setNewDeclIds(prev => { const n = new Set(prev); n.delete(decl._id); return n; });
+            navigation.navigate("Chat", { applicationId: decl._id, serviceName: service.nameService, interlocutorLogin: decl.login });
+          }}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+            <Icon name="chat" size={16} color={unread > 0 ? "#fff" : "#3a7bd5"} />
+            <Text style={[rq.chatBtnText, unread > 0 && { color: "#fff" }]}>Ответить клиенту</Text>
+            {unread > 0 && <Badge count={unread} />}
+          </View>
+        </TouchableOpacity>
+        {!isDone && (
+          <TouchableOpacity style={rq.doneBtn} onPress={() => markDone(decl._id, decl.login)} disabled={updatingId === decl._id}>
+            {updatingId === decl._id ? <ActivityIndicator color="#1d1d1d" size="small" /> : (
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+                <Icon name="check" size={14} color="#1d1d1d" />
+                <Text style={rq.doneBtnText}>Выполнено</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        )}
+      </View>
+    </View>
+  );
+};
 
   return (
     <View style={{ flex: 1, backgroundColor: "#1d1d1d" }}>
@@ -483,6 +525,36 @@ const rq = StyleSheet.create({
   doneBtnText: { color:"#1d1d1d", fontWeight:"bold", fontSize:14 },
   cancelBtn: { flex:1, backgroundColor:"#2a2a2a", borderRadius:12, padding:10, alignItems:"center", borderWidth:1, borderColor:"#ff4444" },
   cancelBtnText: { color:"#ff4444", fontWeight:"bold", fontSize:13 },
+  carInfoBox: {
+  backgroundColor: "#222",
+  borderRadius: 12,
+  padding: 10,
+  marginBottom: 10,
+  borderWidth: 1,
+  borderColor: "#333",
+},
+carInfoTitleRow: {
+  flexDirection: "row",
+  alignItems: "center",
+  marginBottom: 6,
+},
+carInfoTitle: {
+  color: "#FFC107",
+  fontSize: 11,
+  fontWeight: "bold",
+  textTransform: "uppercase",
+  marginLeft: 4,
+},
+carInfoRow: {
+  flexDirection: "row",
+  alignItems: "center",
+  marginBottom: 4,
+},
+carInfoText: {
+  color: "#fff",
+  fontSize: 13,
+  marginLeft: 8,
+},
 });
 
 // ─── Main Screen ──────────────────────────────────────────────────────────────

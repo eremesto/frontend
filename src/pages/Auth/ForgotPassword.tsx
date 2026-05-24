@@ -84,7 +84,7 @@ const ForgotPassword = ({ navigation }: any) => {
         {step === "email" ? (
           <View style={styles.innerContainer}>
             <Text style={styles.title}>Восстановление пароля</Text>
-            <TextInputComponent value={email} setValue={setEmail} placeholder="Ваш email" isSearch={false} />
+            <TextInputComponent value={email} setValue={setEmail} placeholder="Ваш email" isSearch={false} removeWhitespace keyboardType="email-address" />
             <View style={styles.spacer} />
             <ButtonComponent onPress={sendResetCode} isLoading={isLoading} title="Отправить код" />
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.link}>
@@ -94,11 +94,11 @@ const ForgotPassword = ({ navigation }: any) => {
         ) : (
           <View style={styles.innerContainer}>
             <Text style={styles.title}>Введите код из письма</Text>
-            <TextInputComponent value={code} setValue={setCode} placeholder="Код из письма" isSearch={false} />
+            <TextInputComponent value={code} setValue={setCode} placeholder="Код из письма" isSearch={false} removeWhitespace keyboardType="number-pad" />
             <View style={styles.spacer} />
-            <TextInputComponent value={newPassword} setValue={setNewPassword} placeholder="Новый пароль" secureTextEntry isSearch={false} />
+            <TextInputComponent value={newPassword} setValue={setNewPassword} placeholder="Новый пароль" secureTextEntry isSearch={false} removeWhitespace />
             <View style={styles.spacer} />
-            <TextInputComponent value={confirmNewPassword} setValue={setConfirmNewPassword} placeholder="Повторите пароль" secureTextEntry isSearch={false} />
+            <TextInputComponent value={confirmNewPassword} setValue={setConfirmNewPassword} placeholder="Повторите пароль" secureTextEntry isSearch={false} removeWhitespace />
             <View style={styles.spacer} />
             <ButtonComponent onPress={resetPassword} isLoading={isLoading} title="Сбросить пароль" />
             <TouchableOpacity onPress={() => setStep("email")} style={styles.link}>

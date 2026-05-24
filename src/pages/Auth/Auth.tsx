@@ -75,9 +75,9 @@ const Auth = ({ navigation }: NavigationType) => {
             </TouchableOpacity>
           </View>
 
-          <TextInputComponent value={login} setValue={setLogin} placeholder="Логин (email)" isSearch={false} />
+          <TextInputComponent value={login} setValue={setLogin} placeholder="Логин (email)" isSearch={false} removeWhitespace keyboardType="email-address" />
           <View style={{ marginBottom: 15 }} />
-          <TextInputComponent value={password} setValue={setPassword} placeholder="Пароль" secureTextEntry isSearch={false} />
+          <TextInputComponent value={password} setValue={setPassword} placeholder="Пароль" secureTextEntry isSearch={false} removeWhitespace />
           <View style={{ marginBottom: 15 }} />
           <ButtonComponent onPress={handleLogin} isLoading={isUserLoading || isServiceLoading} title="Вход" />
 

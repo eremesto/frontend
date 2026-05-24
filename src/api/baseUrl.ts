@@ -1,1 +1,1 @@
-export const baseUrl = "http://192.168.3.14:3000";
+export const baseUrl = "https://stohelper-backend.onrender.com";
