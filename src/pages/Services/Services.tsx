@@ -120,29 +120,28 @@ const Services = ({ navigation }: any) => {
         <TextInputComponent value={searchText} setValue={setSearchText} placeholder="Поиск" isSearch={true} />
       </View>
       <Text style={styles.header}>Выберите вид услуг</Text>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.filtersScroll}
-        contentContainerStyle={styles.filtersContainer}
+     <ScrollView
+  horizontal
+  showsHorizontalScrollIndicator={false}
+  style={styles.filtersScroll}
+  contentContainerStyle={styles.filtersContainer}
+>
+  {SERVICE_FILTERS.map((filter) => {
+    const isActive = selectedFilter === filter.key;
+    return (
+      <TouchableOpacity
+        key={filter.key}
+        style={[styles.filterChip, isActive && styles.filterChipActive]}
+        onPress={() => setSelectedFilter(filter.key)}
+        activeOpacity={0.85}
       >
-        {SERVICE_FILTERS.map((filter) => {
-          const isActive = selectedFilter === filter.key;
-
-          return (
-            <TouchableOpacity
-              key={filter.key}
-              style={[styles.filterChip, isActive && styles.filterChipActive]}
-              onPress={() => setSelectedFilter(filter.key)}
-              activeOpacity={0.85}
-            >
-              <Text style={[styles.filterChipText, isActive && styles.filterChipTextActive]}>
-                {filter.label}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </ScrollView>
+        <Text style={[styles.filterChipText, isActive && styles.filterChipTextActive]}>
+          {filter.label}
+        </Text>
+      </TouchableOpacity>
+    );
+  })}
+</ScrollView>
       {isLoading ? (
         <ActivityIndicator size="large" color="#FFC107" />
       ) : error ? null : filteredServices.length === 0 ? (

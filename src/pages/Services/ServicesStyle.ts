@@ -25,10 +25,15 @@ export default StyleSheet.create({
   filtersScroll: {
     marginBottom: 18,
     flexGrow: 0,
+    height: 46,
+    maxHeight: 46,
   },
   filtersContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
     paddingRight: 8,
+    paddingVertical: 4,
   },
   filterChip: {
     backgroundColor: "#2a2a2a",
@@ -36,7 +41,10 @@ export default StyleSheet.create({
     borderColor: "#444",
     borderRadius: 18,
     paddingHorizontal: 14,
-    paddingVertical: 8,
+    paddingVertical: 6,
+    minHeight: 34,
+    justifyContent: "center",
+    alignItems: "center",
   },
   filterChipActive: {
     backgroundColor: "#FFC107",
@@ -58,7 +66,7 @@ export default StyleSheet.create({
   serviceCard: {
     width: screenWidth * 0.44,
     height: screenHeight * 0.22,
-    backgroundColor: "#f0f0f0", // светлый фон — иконки хорошо видны
+    backgroundColor: "#f0f0f0",
     borderRadius: 20,
     marginBottom: 16,
     overflow: "hidden",
@@ -98,30 +106,6 @@ export default StyleSheet.create({
     fontWeight: "700",
     textAlign: "center",
   },
-  // Оверлей больше не нужен но оставим для совместимости
-  serviceOverlay: {},
-  searchInput: {
-    flex: 1,
-    height: 40,
-    borderColor: "#999",
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    color: "#fff",
-  },
-  navigation: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    paddingVertical: 10,
-    backgroundColor: "#2c2c2c",
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
-  navButton: {
-    alignItems: "center",
-  },
   buttonContainer: {
     backgroundColor: "#FFC107",
     width: "80%",
@@ -155,11 +139,5 @@ export default StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     textAlign: "center",
-  },
-  servicesBackground: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    resizeMode: "cover",
   },
 });
