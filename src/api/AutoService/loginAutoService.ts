@@ -15,5 +15,4 @@ export const loginAutoServiceApi = createApi({
   }),
 });
 
-// Экспортируем с правильным именем
 export const { useLoginAutoServiceMutation } = loginAutoServiceApi;

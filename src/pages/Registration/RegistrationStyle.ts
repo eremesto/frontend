@@ -1,6 +1,5 @@
 import { Dimensions, StyleSheet } from "react-native";
 
-// Получаем размеры экрана
 const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
@@ -9,7 +8,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#3B3B3B",
     padding: 20,
-    flex: 1, // Чтобы контейнер занимал весь экран
+    flex: 1, 
   },
   title: {
     fontSize: width * 0.07,

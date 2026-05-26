@@ -20,7 +20,7 @@ export type RootStackParamList = {
   Registration: undefined;
   SearchResults: { selectedServices: { id: string; name: string }[] };
   Chat: { applicationId: string; serviceName: string; interlocutorLogin: string };
-  ForgotPassword: undefined;   // <-- ДОБАВИТЬ
+  ForgotPassword: undefined;   
 };
 
 export type NavigationType = {
@@ -58,7 +58,7 @@ const bd = StyleSheet.create({
   badgeText: { color: "#fff", fontSize: 10, fontWeight: "bold" },
 });
 
-// ─── Tab Bar ──────────────────────────────────────────────────────────────────
+
 const TabBar = ({ tabs, activeTab, setActiveTab, accentColor = "#FFC107", badges = {} }: any) => (
   <View style={tb.container}>
     {tabs.map((tab: any) => {
@@ -83,7 +83,6 @@ const TabBar = ({ tabs, activeTab, setActiveTab, accentColor = "#FFC107", badges
   </View>
 );
 
-// ─── Заявки пользователя ──────────────────────────────────────────────────────
 const UserRequestsScreen = ({ navigation, onUnreadChange }: any) => {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state: any) => state.registrationUser.user);
@@ -239,7 +238,6 @@ const UserRequestsScreen = ({ navigation, onUnreadChange }: any) => {
   );
 };
 
-// ─── Заявки сервиса ───────────────────────────────────────────────────────────
 const ServiceRequestsScreen = ({ navigation, onUnreadChange }: any) => {
   const dispatch = useAppDispatch();
   const service = useAppSelector((state: any) => state.registrationUser.service);
@@ -557,7 +555,7 @@ carInfoText: {
 },
 });
 
-// ─── Main Screen ──────────────────────────────────────────────────────────────
+
 const MainScreen = ({ navigation }: any) => {
   const serviceData = useAppSelector((state: any) => state.registrationUser.service);
   const userData = useAppSelector((state: any) => state.registrationUser.user);

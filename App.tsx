@@ -1,4 +1,3 @@
-// App.tsx
 import React from "react";
 import { Navigation } from "./Navigation";
 import { Provider } from "react-redux";

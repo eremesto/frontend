@@ -5,7 +5,7 @@ interface ServiceTypeState {
 }
 
 const initialState: ServiceTypeState = {
-  type: "user", // Изначальное значение
+  type: "user", 
 };
 
 const authTypeSlice = createSlice({
@@ -13,10 +13,10 @@ const authTypeSlice = createSlice({
   initialState,
   reducers: {
     setAuthType(state, action: PayloadAction<string>) {
-      state.type = action.payload; // Изменяем значение type на переданное
+      state.type = action.payload; 
     },
     clearAuthType(state) {
-      state.type = ""; // Очищаем значение
+      state.type = ""; 
     },
   },
 });

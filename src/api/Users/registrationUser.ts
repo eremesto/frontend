@@ -1,20 +1,18 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { baseUrl } from "api/baseUrl"; // Предположим, что baseUrl определен
+import { baseUrl } from "api/baseUrl";
 
 export const registrationUserApi = createApi({
-  reducerPath: "registrationUserApi", // Название редьюсера
-  baseQuery: fetchBaseQuery({ baseUrl }), // Базовый URL
+  reducerPath: "registrationUserApi", 
+  baseQuery: fetchBaseQuery({ baseUrl }), 
   endpoints: (builder) => ({
-    // Мутация для регистрации пользователя
     registerUser: builder.mutation({
       query: (userData) => ({
-        url: "/user/registrationUser", // Путь к API регистрации
+        url: "/user/registrationUser", 
         method: "POST",
-        body: userData, // Передача данных пользователя в теле запроса
+        body: userData, 
       }),
     }),
   }), 
 });
 
-// Экспортируем сгенерированные хуки
 export const { useRegisterUserMutation } = registrationUserApi;

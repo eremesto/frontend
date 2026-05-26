@@ -14,13 +14,13 @@ const styles = StyleSheet.create({
     paddingVertical: 12, // Внутренние отступы для увеличения высоты кнопки
     borderRadius: 24, // Округленные углы кнопки
     marginBottom: 25, // Отступ между кнопками и другими элементами
-    marginTop: height * 0.03, // Отступ сверху для дополнительного пространства
+    marginTop: height * 0.03, // Отступ сверху 
   },
   buttonText: {
     textAlign: "center",
     fontSize: 16,
     fontWeight: "bold",
-    color: "#3B3B3B", // Цвет текста кнопки
+    color: "#3B3B3B", 
   },
 });
 

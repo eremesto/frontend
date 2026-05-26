@@ -9,16 +9,16 @@ interface PhoneInputProps {
 }
 
 const formatPhoneNumber = (text: string): string => {
-  // Удаляем все нецифровые символы
+  // - все нецифровые символы
   const cleaned = text.replace(/\D/g, "");
   
-  // Ограничиваем до 11 цифр (7 + 10 цифр номера)
+  // 7 + 10 цифр номера
   const limited = cleaned.slice(0, 11);
   
   if (limited.length === 0) return "+7";
   if (limited === "7") return "+7";
   
-  // Форматируем по маске +7 (XXX) XXX-XX-XX
+  // Маска +7 (XXX) XXX-XX-XX
   let result = "+7";
   
   if (limited.length > 1) {
@@ -47,7 +47,6 @@ const formatPhoneNumber = (text: string): string => {
 
 const PhoneInputComponent: React.FC<PhoneInputProps> = ({ value, setValue }) => {
   const handleChangeText = (text: string) => {
-    // Если пользователь стирает всё, оставляем пустым
     if (text === "" || text === "+7") {
       setValue("");
       return;

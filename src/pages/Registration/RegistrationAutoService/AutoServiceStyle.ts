@@ -3,12 +3,6 @@ import { StyleSheet } from "react-native";
 const { width } = Dimensions.get("window");
 
 export const styles = StyleSheet.create({
-  //   buttonContainer: {
-  //     flexDirection: "row",
-  //     justifyContent: "space-between",
-  //     alignItems: "center",
-  //     marginVertical: 10,
-  //   },
   buttonWrapper: {
     padding: 10,
     borderRadius: 5,
@@ -61,13 +55,13 @@ export const styles = StyleSheet.create({
     width: "100%",
   },
   serviceImage: {
-    width: 50, // Задайте ширину изображения
-    height: 50, // Задайте высоту изображения
-    borderRadius: 5, // Сглаживаем края изображения
-    marginRight: 16, // Отступ между изображением и текстом
+    width: 50, 
+    height: 50, 
+    borderRadius: 5, 
+    marginRight: 16, 
   },
   serviceInfo: {
-    flex: 1, // Позволяет тексту и чекбоксу занимать оставшееся пространство
+    flex: 1, 
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",

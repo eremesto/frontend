@@ -30,7 +30,6 @@ const formatServicePrice = (price?: string) => {
   return trimmedPrice;
 };
 
-// ======================== CalendarPicker =========================
 const MONTH_NAMES = ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
 const DAY_NAMES = ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
 
@@ -139,7 +138,6 @@ const cal = StyleSheet.create({
   previewText: { color:"#FFC107", fontSize:14, fontWeight:"bold" },
 });
 
-// ======================== SmartTimePicker =========================
 const SmartTimePicker = ({ value, onChange, serviceId, date }: any) => {
   const hours = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, "0"));
   const minutes = ["00", "15", "30", "45"];
@@ -305,7 +303,6 @@ const dp = StyleSheet.create({
   previewText: { color:"#FFC107", fontSize:16, fontWeight:"bold" },
 });
 
-// ======================== ServiceProfile ========================
 const ServiceProfile = ({ service, navigation, dispatch }: any) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -383,7 +380,6 @@ const ServiceProfile = ({ service, navigation, dispatch }: any) => {
         </View>
       )}
 
-      {/* Остальная часть карточки без изменений */}
       <View style={st.card}>
         <Text style={st.cardTitle}>Контакты</Text>
         {[
@@ -477,9 +473,8 @@ const ServiceProfile = ({ service, navigation, dispatch }: any) => {
   );
 };
 
-// ======================== UserProfile ========================
 const UserProfile = ({ user, navigation, dispatch }: any) => {
-  // Редактирование авто
+  
   const [isEditingCar, setIsEditingCar] = useState(false);
   const [isSavingCar, setIsSavingCar] = useState(false);
   const [phone, setPhone] = useState(user?.phone || "");
@@ -489,7 +484,6 @@ const UserProfile = ({ user, navigation, dispatch }: any) => {
   const [carNumber, setCarNumber] = useState(user?.carNumber || "");
   const [vinNumber, setVinNumber] = useState(user?.vinNumber || "");
 
-  // Редактирование профиля (личные данные)
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [displayName, setDisplayName] = useState(user?.displayName || "");
@@ -505,7 +499,7 @@ const formatDateToDMY = (dateStr: string) => {
     const [year, month, day] = parts;
     return `${day}.${month}.${year}`;
   }
-  return dateStr; // fallback
+  return dateStr; 
 };
 
 const formatDateToYMD = (dateStr: string) => {
@@ -601,7 +595,7 @@ const formatDateToYMD = (dateStr: string) => {
 };
 
   const handleSaveProfile = async () => {
-  // Валидация имени (если поле не пустое)
+
   if (displayName && !validateName(displayName)) {
     Alert.alert(
       "Ошибка",
@@ -810,7 +804,7 @@ const formatDateToYMD = (dateStr: string) => {
   </View>
 )}
 
-      {/* Карточка аккаунта (отображается только если не редактируем) */}
+      {/* Карточка аккаунта (отображается только если не редачится) */}
       {!isEditingProfile && (
         <View style={st.card}>
           <Text style={st.cardTitle}>Аккаунт</Text>
@@ -853,6 +847,7 @@ const formatDateToYMD = (dateStr: string) => {
           <View style={st.infoFlex}><Text style={st.menuLabel}>Избранные сервисы</Text><Text style={st.menuSub}>Сохранённые автосервисы ({favorites.length})</Text></View>
           <Icon name="back" size={16} color="#555" style={{ transform: [{ rotate: "180deg" }] }} />
         </TouchableOpacity>
+        {/* Для истории поиска и уведомлений (НАДО БУДЕТ СДЕЛАТЬ =( )) */}
         {/* <TouchableOpacity style={st.menuItem} onPress={() => setShowHistory(true)}>
           <Icon name="history" size={20} color="#FFC107" />
           <View style={st.infoFlex}><Text style={st.menuLabel}>История поиска</Text><Text style={st.menuSub}>Недавние запросы ({searchHistory.length})</Text></View>
@@ -991,6 +986,7 @@ const formatDateToYMD = (dateStr: string) => {
         </View>
       </Modal>
 
+{/* Модалки для истории поиска и уведомлений (НАДО БУДЕТ СДЕЛАТЬ =( )) */}
       {/* <Modal visible={showHistory} animationType="slide" transparent>
         <View style={st.overlay}>
           <View style={st.modalBox}>
@@ -1016,7 +1012,6 @@ const formatDateToYMD = (dateStr: string) => {
   );
 };
 
-// ======================== Main Profile ========================
 const Profile = ({ navigation }: any) => {
   const dispatch = useAppDispatch();
   const serviceData = useAppSelector((state: any) => state.registrationUser.service);

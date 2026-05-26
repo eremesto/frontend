@@ -3,13 +3,12 @@ import { baseUrl } from "api/baseUrl";
 
 export const servicesApi = createApi({
   reducerPath: "servicesApi",
-  baseQuery: fetchBaseQuery({ baseUrl: baseUrl }), // Базовый URL вашего API
+  baseQuery: fetchBaseQuery({ baseUrl: baseUrl }), 
   endpoints: (builder) => ({
     getServices: builder.query<any, void>({
-      query: () => "user/getServices", // Относительный URL для запроса
+      query: () => "user/getServices", 
     }),
   }),
 });
 
-// Экспортируем хук для использования в компонентах
 export const { useGetServicesQuery } = servicesApi;

@@ -1,6 +1,5 @@
 import { Dimensions, StyleSheet } from "react-native";
 
-// Получаем размеры экрана
 const { width } = Dimensions.get("window");
 const { height } = Dimensions.get("window");
 
@@ -10,7 +9,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#3B3B3B",
     padding: 20,
-    flex: 1, // Чтобы контейнер занимал весь экран
+    flex: 1, 
   },
   title: {
     fontSize: width * 0.1,
@@ -38,7 +37,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   userButton: {
-    backgroundColor: "#FFC107", // Основной желтый цвет
+    backgroundColor: "#FFC107", 
     flex: 1,
     padding: 10,
     marginLeft: 5,
@@ -46,10 +45,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   activeButton: {
-    backgroundColor: "#FFC107", // Яркий желтый цвет для активной кнопки
+    backgroundColor: "#FFC107", 
   },
   inactiveButton: {
-    backgroundColor: "#D3B89A", // Затемненный цвет для неактивной кнопки (можно использовать любой другой цвет)
+    backgroundColor: "#D3B89A", // Затемненный цвет для неактивной кнопки 
   },
   input: {
     borderColor: "#FFC107",
@@ -79,9 +78,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   separator: {
-    marginHorizontal: 6, // Отступы по горизонтали
-    fontSize: 30, // Размер шрифта для разделителя
-    color: "#FFC107", // Цвет разделителя
+    marginHorizontal: 6, 
+    fontSize: 30, 
+    color: "#FFC107", 
   },
 });
 

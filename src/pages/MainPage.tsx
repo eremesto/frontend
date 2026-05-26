@@ -9,11 +9,10 @@ export const MainPage = () => {
   );
 };
 
-// Стили для компонента MainPage
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // Позволяет контейнеру занимать весь экран
-    backgroundColor: "#3B3B3B", // Устанавливаем цвет фона, если необходимо
+    flex: 1, 
+    backgroundColor: "#3B3B3B", 
   },
 });
 

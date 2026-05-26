@@ -1,4 +1,3 @@
-// StyledComponents.ts
 import { styled } from "nativewind";
 import {
   View,
@@ -12,7 +11,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-// Создание стилизованных компонентов
 export const StyledView = styled(View);
 export const StyledText = styled(Text);
 export const StyledImage = styled(Image);

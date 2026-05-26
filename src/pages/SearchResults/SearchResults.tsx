@@ -23,7 +23,6 @@ const formatServicePrice = (price?: string) => {
 const getServicePriceLabel = (service: any, serviceName: string) =>
   formatServicePrice((service?.servicePrices as ServicePrices | undefined)?.[serviceName]);
 
-// ─── CalendarPicker (без эмодзи) ────────────────────────────────────────────
 const MONTH_NAMES = ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
 const DAY_NAMES = ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
 
@@ -132,7 +131,6 @@ const cal = StyleSheet.create({
   previewText: { color:"#FFC107", fontSize:14, fontWeight:"bold" },
 });
 
-// ─── SmartTimePicker (с учётом рабочих часов) ──────────────────────────────
 const SmartTimePicker = ({ value, onChange, serviceId, date }: any) => {
   const hours = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, "0"));
   const minutes = ["00", "15", "30", "45"];
@@ -297,7 +295,6 @@ const dp = StyleSheet.create({
   previewText: { color:"#FFC107", fontSize:16, fontWeight:"bold" },
 });
 
-// ─── Основной компонент SearchResults ───────────────────────────────────────
 const SearchResults = ({ route, navigation }: any) => {
   const { selectedServices } = route.params;
   const dispatch = useAppDispatch();
